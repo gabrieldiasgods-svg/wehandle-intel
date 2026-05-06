@@ -1,16 +1,910 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<link
-			rel="icon"
-			href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 66 30'><path fill='%23000000' d='M52.688 13.028c-.22 0-.437.008-.654.015a.3.3 0 0 0-.102.024.37.37 0 0 0-.236.255l-.93 3.249c-.401 1.397-.252 2.687.422 3.634.618.876 1.646 1.39 2.894 1.45l5.045.306a.45.45 0 0 1 .435.41.5.5 0 0 1-.025.223.64.64 0 0 1-.547.426l-5.242.306c-2.848.132-5.912 2.456-6.987 5.29l-.378 1a.28.28 0 0 0 .248.382h18.054a.48.48 0 0 0 .464-.35c.32-1.153.482-2.344.48-3.54 0-7.22-5.79-13.072-12.933-13.072M44.807 29.578l.334-1.175c.402-1.397.253-2.687-.42-3.634-.62-.876-1.647-1.39-2.896-1.45l-23.665-.306a.47.47 0 0 1-.374-.199.5.5 0 0 1-.052-.434.64.64 0 0 1 .552-.426l23.886-.306c2.836-.131 5.9-2.456 6.975-5.29l1.362-3.6a.9.9 0 0 0 .04-.477C48.997 5.259 42.789 0 35.367 0c-6.842 0-12.647 4.462-14.73 10.665a6.92 6.92 0 0 0-4.911-1.374c-3.28.33-5.92 3.002-6.246 6.318a7.2 7.2 0 0 0 .18 2.472C4.3 18.241 0 22.679 0 28.133q0 .74.106 1.453a.46.46 0 0 0 .457.402h43.704a.57.57 0 0 0 .54-.418'/></svg>"
-		/>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Workflows Starter Template</title>
-	</head>
-	<body>
-		<div id="root"></div>
-		<script type="module" src="/src/main.tsx"></script>
-	</body>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>wehandle · Intel</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0F1B2D;--ink-mid:#2D3F58;--ink-soft:#5A6F8A;--ink-faint:#8FA3BD;
+  --paper:#FAFBFC;--surface:#FFFFFF;--surface-raised:#F4F6F9;
+  --line:#E4E9F0;--line-soft:#EDF1F6;
+  --rose:#D6418C;--rose-soft:#F9E8F3;--rose-mid:#EFA8D0;
+  --jade:#0A6B4F;--jade-soft:#E6F4F0;
+  --amber:#92600A;--amber-soft:#FDF3E3;
+  --ruby:#B52B2B;--ruby-soft:#FDF0F0;
+  --sapphire:#1347A8;--sapphire-soft:#EBF0FB;
+  --r:6px;--r-lg:10px;--r-xl:16px;
+  --s1:0 1px 3px rgba(15,27,45,.06);
+  --s2:0 4px 16px rgba(15,27,45,.09),0 1px 4px rgba(15,27,45,.05);
+}
+html{height:100%;font-size:14px}
+body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);height:100%;display:grid;grid-template-rows:auto 1fr;overflow:hidden}
+
+/* ── TOPBAR ── */
+.top{height:48px;background:var(--ink);display:flex;align-items:center;padding:0 24px;gap:16px;flex-shrink:0}
+.top-logo{display:flex;align-items:center;gap:8px}
+.top-logo img{height:20px;filter:brightness(0) invert(1)}
+.top-logo-txt{color:#fff;font-weight:600;font-size:14px;letter-spacing:-.02em;display:none}
+.top-div{width:1px;height:16px;background:rgba(255,255,255,.15)}
+.top-period{margin-left:auto;display:flex;align-items:center;gap:6px}
+.top-period select{background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.8);font-size:11px;padding:4px 10px;border-radius:20px;font-family:inherit;cursor:pointer}
+.top-badge{background:var(--rose);color:#fff;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:.02em}
+
+/* ── LAYOUT ── */
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:0;overflow:hidden}
+
+/* ── SIDEBAR ── */
+.side{background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow-y:auto}
+.side-header{padding:20px 20px 6px}
+.side-lbl{font-size:9px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.1em}
+.side-nav{padding:6px 10px;display:flex;flex-direction:column;gap:1px}
+.sn{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-lg);font-size:12px;font-weight:500;color:var(--ink-soft);cursor:pointer;transition:all .15s;border:none;background:none;width:100%;text-align:left}
+.sn:hover{background:var(--surface-raised);color:var(--ink)}
+.sn.active{background:var(--rose-soft);color:var(--rose);font-weight:600}
+.sn-ico{width:16px;height:16px;flex-shrink:0;opacity:.5}
+.sn.active .sn-ico{opacity:1}
+.side-bottom{margin-top:auto;padding:16px 20px;border-top:1px solid var(--line-soft)}
+.side-bottom-txt{font-size:10px;color:var(--ink-soft)}
+
+/* ── SCROLL AREA ── */
+.scroll{overflow-y:auto;display:flex;flex-direction:column}
+
+/* ── RISK STRIP (ponto 4) ── */
+.risk-strip{background:var(--ruby-soft);border-bottom:1px solid #F5C2C2;padding:10px 28px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.risk-strip-ico{font-size:15px}
+.risk-strip-txt{font-size:12px;color:var(--ruby);line-height:1.4;flex:1}
+.risk-strip-txt strong{font-weight:600}
+.risk-strip-btn{font-size:11px;font-weight:600;color:var(--ruby);cursor:pointer;padding:4px 12px;border:1px solid #F5C2C2;border-radius:20px;background:#fff;white-space:nowrap;flex-shrink:0;transition:all .12s}
+.risk-strip-btn:hover{background:var(--ruby-soft)}
+.risk-strip[hidden]{display:none}
+
+/* ── MAIN ── */
+.main{padding:28px 28px 40px;max-width:1160px;width:100%}
+
+/* ── PAGE HEADER ── */
+.ph{margin-bottom:24px}
+.ph-eyebrow{font-size:9px;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px}
+.ph-title{font-family:'DM Serif Display',serif;font-size:30px;color:var(--ink);letter-spacing:-.02em;line-height:1.1}
+.ph-sub{font-size:13px;color:var(--ink-mid);margin-top:5px;line-height:1.5;font-weight:300}
+
+/* ── NARRATIVE (ponto 2) ── */
+.narrative{background:var(--ink);border-radius:var(--r-xl);padding:24px 28px;margin-bottom:24px;position:relative;overflow:hidden}
+.narrative::after{content:'';position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:rgba(214,65,140,.08)}
+.nar-eye{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--rose-mid);margin-bottom:10px}
+.nar-body{font-size:15px;font-weight:400;line-height:1.8;color:rgba(255,255,255,.88);max-width:680px}
+.nar-body[contenteditable]{outline:none}
+.nar-body[contenteditable]:focus{background:rgba(255,255,255,.04);border-radius:4px;padding:4px}
+.nar-hint{font-size:10px;color:rgba(255,255,255,.78);margin-top:10px}
+
+/* ── KPIs (ponto 1 densidade + ponto 5 delta) ── */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:24px}
+.kcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 20px;box-shadow:var(--s1);position:relative}
+.kcard-eye{font-size:9px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.09em;margin-bottom:10px}
+.kcard-val{font-size:28px;font-weight:600;color:var(--ink);letter-spacing:-.04em;line-height:1}
+.kcard-sub{font-size:12px;color:var(--ink-mid);margin-top:6px}
+.kcard-delta{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;margin-top:8px}
+.dpos{background:var(--jade-soft);color:var(--jade)}
+.dneg{background:var(--ruby-soft);color:var(--ruby)}
+.dneu{background:var(--amber-soft);color:var(--amber)}
+.kcard-bar{height:2px;background:var(--line-soft);border-radius:2px;margin-top:10px;overflow:hidden}
+.kcard-bar-fill{height:2px;border-radius:2px;background:var(--rose);transition:width .6s ease}
+.kcard-meta{font-size:9px;color:var(--ink-soft);margin-top:4px}
+
+/* ── CHART (ponto 6) ── */
+.chart-wrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;box-shadow:var(--s1);margin-bottom:24px}
+.cw-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.cw-title{font-size:13px;font-weight:600;color:var(--ink)}
+.cw-filters{display:flex;gap:3px;background:var(--surface-raised);border-radius:20px;padding:3px}
+.cwf{font-size:10px;padding:3px 10px;border-radius:20px;border:none;background:none;color:var(--ink-soft);cursor:pointer;font-weight:500;font-family:inherit;transition:all .12s}
+.cwf.active{background:var(--surface);color:var(--ink);box-shadow:var(--s1);font-weight:600}
+.chart-h{height:150px;position:relative}
+
+/* ── TWO-COL ── */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px}
+
+/* ── CARD ── */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;box-shadow:var(--s1)}
+.card-head{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.card-head-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.card-head-title{font-size:12px;font-weight:600;color:var(--ink)}
+
+/* ── SECTION ── */
+.sec{margin-bottom:24px}
+.sec-lbl{font-size:9px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+
+/* ── TABLE (ponto 3 — sem tabela na 1ª dobra) ── */
+.tbl{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--s1)}
+.tbl-head{display:grid;padding:8px 18px;background:var(--surface-raised);border-bottom:1px solid var(--line)}
+.tbl-ch{font-size:9px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.07em}
+.tbl-row{display:grid;padding:11px 18px;border-bottom:1px solid var(--line-soft);align-items:center;cursor:pointer;transition:background .1s}
+.tbl-row:hover{background:var(--surface-raised)}
+.tbl-row:last-child{border-bottom:none}
+.tr-name{font-size:13px;font-weight:600;color:var(--ink)}
+.tr-sub{font-size:11px;color:var(--ink-mid);margin-top:2px}
+.tr-val{font-size:13px;font-weight:600;color:var(--ink)}
+.tr-val-s{font-size:11px;color:var(--ink-mid);margin-top:1px}
+
+/* ── TAGS ── */
+.tag{font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;display:inline-block;letter-spacing:.01em}
+.t-sap{background:var(--sapphire-soft);color:var(--sapphire)}
+.t-grn{background:var(--jade-soft);color:var(--jade)}
+.t-red{background:var(--ruby-soft);color:var(--ruby)}
+.t-amb{background:var(--amber-soft);color:var(--amber)}
+.t-ros{background:var(--rose-soft);color:var(--rose)}
+.t-gry{background:var(--surface-raised);color:var(--ink-soft);border:1px solid var(--line)}
+.dot-s{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px}
+.d-won{background:#0A6B4F}.d-open{background:#1347A8}.d-risk{background:#B52B2B}
+
+/* ── PILLS ── */
+.pills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:18px}
+.pill{font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);cursor:pointer;font-weight:500;transition:all .12s;font-family:inherit}
+.pill:hover{border-color:var(--ink-mid);color:var(--ink)}
+.pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pill.on-rose{background:var(--rose);color:#fff;border-color:var(--rose)}
+
+/* ── FUNNEL ── */
+.fn-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.fn-lbl{font-size:12px;color:var(--ink-mid);width:130px;flex-shrink:0}
+.fn-wrap{flex:1;background:var(--surface-raised);border-radius:3px;height:6px;overflow:hidden}
+.fn-fill{height:6px;border-radius:3px;background:var(--ink);transition:width .5s}
+.fn-val{font-size:11px;font-weight:600;color:var(--ink);width:80px;text-align:right;flex-shrink:0}
+
+/* ── SCENARIO CARDS ── */
+.sc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.sc{border-radius:var(--r-lg);padding:16px 18px;border:1px solid}
+.sc-frio{background:#EBF2FF;border-color:#93C5FD;color:#1e3a8a}
+.sc-morno{background:var(--amber-soft);border-color:#FCD34D;color:#78350f}
+.sc-quente{background:var(--jade-soft);border-color:#6EE7B7;color:#064e3b}
+.sc-eye{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px;opacity:.65}
+.sc-val{font-size:22px;font-weight:600;letter-spacing:-.03em}
+.sc-sub{font-size:10px;margin-top:4px;opacity:.7}
+
+/* ── CMO PANELS ── */
+.cmo-panels{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.cmo-panel{border-radius:var(--r-lg);border:1px solid;overflow:hidden}
+.cmo-in-p{border-color:#6EE7B7}.cmo-out-p{border-color:#FCA5A5}
+.cmo-ph{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid}
+.cmo-in-p .cmo-ph{background:var(--jade-soft);border-color:#6EE7B7}
+.cmo-out-p .cmo-ph{background:var(--ruby-soft);border-color:#FCA5A5}
+.cmo-ph img{height:16px}
+.cmo-ph-badge{margin-left:auto;font-size:9px;font-weight:700;padding:2px 9px;border-radius:20px;letter-spacing:.04em}
+.cmo-in-p .cmo-ph-badge{background:var(--jade);color:#fff}
+.cmo-out-p .cmo-ph-badge{background:var(--ruby);color:#fff}
+.cmo-pb{padding:12px 16px}
+.cmo-tabs{display:flex;gap:0;border-bottom:1px solid var(--line-soft);margin-bottom:10px}
+.cmo-tab{font-size:11px;padding:5px 12px;border:none;background:none;color:var(--ink-soft);cursor:pointer;font-family:inherit;font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .12s}
+.cmo-tab:hover{color:var(--ink)}
+.cmo-tab.active{color:var(--rose);border-bottom-color:var(--rose);font-weight:600}
+.cmo-item{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line-soft)}
+.cmo-item:last-child{border-bottom:none}
+.cmo-il{font-size:12px;color:var(--ink-mid)}
+.cmo-iv{font-size:12px;font-weight:600;color:var(--ink)}
+
+/* ── OBS ── */
+.obs{background:var(--surface-raised);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;font-size:12px;color:var(--ink-soft);line-height:1.7;min-height:64px;outline:none;transition:border .15s;font-family:inherit}
+.obs:focus{border-color:var(--rose)}
+
+/* ── INV HERO ── */
+.inv-hero{background:var(--ink);border-radius:var(--r-xl);padding:26px 28px;margin-bottom:20px;overflow:hidden;position:relative}
+.inv-hero::after{content:'';position:absolute;right:-40px;bottom:-40px;width:180px;height:180px;border-radius:50%;background:rgba(214,65,140,.1)}
+.ih-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
+.ih-title{font-family:'DM Serif Display',serif;font-size:22px;color:#fff;letter-spacing:-.01em}
+.ih-sub{font-size:12px;color:rgba(255,255,255,.85);margin-top:4px;font-weight:300}
+.ih-badge{background:rgba(214,65,140,.85);color:#fff;font-size:10px;font-weight:600;padding:4px 12px;border-radius:20px}
+.ih-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.12);border-radius:var(--r-lg);overflow:hidden}
+.ihm{background:rgba(255,255,255,.07);padding:14px 16px}
+.ihm-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.85);margin-bottom:5px;font-weight:600}
+.ihm-val{font-size:22px;font-weight:600;color:#fff;letter-spacing:-.03em}
+.ihm-sub{font-size:11px;color:rgba(255,255,255,.82);margin-top:3px}
+
+/* ── LINK CHIPS ── */
+.lchips{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap}
+.lchip{display:flex;align-items:center;gap:8px;padding:9px 16px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:12px;font-weight:500;color:var(--ink-soft);transition:all .15s;font-family:inherit}
+.lchip:hover{border-color:var(--rose);color:var(--rose)}
+.lchip img{height:13px;opacity:.4}
+
+/* ── OVERLAY ── */
+.overlay{display:none;position:fixed;inset:0;z-index:600;background:var(--surface);overflow-y:auto;padding:28px}
+.overlay.open{display:block}
+.ov-back{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-soft);cursor:pointer;margin-bottom:24px;padding:7px 14px;border-radius:var(--r);border:1px solid var(--line);transition:all .15s;font-family:inherit;background:none}
+.ov-back:hover{border-color:var(--ink);color:var(--ink)}
+
+/* ── MOBILE (ponto 8) ── */
+@media(max-width:800px){
+  .shell{grid-template-columns:1fr}
+  .side{display:none}
+  .mob-nav{display:flex!important}
+  .kpis{grid-template-columns:1fr 1fr}
+  .two,.three,.cmo-panels,.sc-grid,.ih-metrics{grid-template-columns:1fr}
+  .main{padding:16px}
+}
+.mob-nav{display:none;overflow-x:auto;background:var(--surface);border-bottom:1px solid var(--line);padding:0 12px;gap:0;flex-shrink:0}
+.mn-item{font-size:12px;font-weight:500;padding:10px 14px;color:var(--ink-soft);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .12s}
+.mn-item.active{color:var(--rose);border-bottom-color:var(--rose)}
+
+.page{display:none}.page.active{display:block}
+.nr{padding:2rem;text-align:center;color:var(--ink-soft);font-size:13px}
+
+/* ── SPLASH ── */
+.splash{position:fixed;inset:0;z-index:1000;background:#0F1B2D;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;transition:opacity .4s ease}
+.splash.out{opacity:0;pointer-events:none}
+.splash.hidden{display:none}
+.splash-logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:48px}
+.splash-logo{height:32px;filter:brightness(0) invert(1);display:block;margin-bottom:14px}
+.splash-logo-fallback{color:#fff;font-size:22px;font-weight:600;letter-spacing:-.03em;margin-bottom:14px;display:none}
+.splash-product{font-size:11px;font-weight:500;color:rgba(255,255,255,.82);letter-spacing:.18em;text-transform:uppercase}
+.splash-divider{width:32px;height:1px;background:rgba(255,255,255,.12);margin:20px 0}
+.splash-prompt{font-size:12px;color:rgba(255,255,255,.78);letter-spacing:.05em}
+.splash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:660px}
+.sc-entry{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:22px 16px;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:10px}
+.sc-entry:hover{background:rgba(255,255,255,.11);border-color:rgba(214,65,140,.4);transform:translateY(-2px)}
+.sc-entry.hero{border-color:rgba(214,65,140,.5);background:rgba(214,65,140,.08)}
+.sc-entry-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.sc-entry-name{font-size:13px;font-weight:600;color:#fff;letter-spacing:-.01em}
+.sc-entry-desc{font-size:10px;color:rgba(255,255,255,.82);text-align:center;line-height:1.55}
+.splash-foot{margin-top:36px;font-size:10px;color:rgba(255,255,255,.65);letter-spacing:.07em}
+@media(max-width:580px){.splash-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="splash" id="splash">
+  <div class="splash-logo-wrap">
+    <img class="splash-logo" src="https://wehandle.com.br/hs-fs/hubfs/Marca/Horizontal_Tipo%20Azul%201.png?width=170&height=80" alt="wehandle" onerror="this.style.display='none';document.getElementById('s-logo-txt').style.display='block'">
+    <div id="s-logo-txt" class="splash-logo-fallback">wehandle</div>
+    <div class="splash-product">wehandle Intelligence</div>
+    <div class="splash-divider"></div>
+    <div class="splash-prompt">Selecione seu perfil para continuar</div>
+  </div>
+  <div class="splash-grid">
+    <div class="sc-entry" onclick="enterAs('overview')">
+      <div class="sc-entry-ico" style="background:rgba(255,255,255,.08)">⊞</div>
+      <div class="sc-entry-name">Visão Geral</div>
+      <div class="sc-entry-desc">Todas as contas, filtros e visões combinadas</div>
+    </div>
+    <div class="sc-entry hero" onclick="enterAs('ceo')">
+      <div class="sc-entry-ico" style="background:rgba(214,65,140,.18)">👤</div>
+      <div class="sc-entry-name">CEO</div>
+      <div class="sc-entry-desc">Impacto total, novas logos e contas estratégicas</div>
+    </div>
+    <div class="sc-entry" onclick="enterAs('cfo')">
+      <div class="sc-entry-ico" style="background:rgba(255,255,255,.08)">R$</div>
+      <div class="sc-entry-name">CFO</div>
+      <div class="sc-entry-desc">Receita, contratos, projeções e margens</div>
+    </div>
+    <div class="sc-entry" onclick="enterAs('cmo')">
+      <div class="sc-entry-ico" style="background:rgba(255,255,255,.08)">↗</div>
+      <div class="sc-entry-name">CMO</div>
+      <div class="sc-entry-desc">Novas logos, mercados e perdas do período</div>
+    </div>
+    <div class="sc-entry" onclick="enterAs('cto')">
+      <div class="sc-entry-ico" style="background:rgba(255,255,255,.08)">&lt;/&gt;</div>
+      <div class="sc-entry-name">CTO</div>
+      <div class="sc-entry-desc">Gaps de produto e oportunidades técnicas</div>
+    </div>
+    <div class="sc-entry" onclick="enterAs('fundos')">
+      <div class="sc-entry-ico" style="background:rgba(255,255,255,.08)">📊</div>
+      <div class="sc-entry-name">Fundos</div>
+      <div class="sc-entry-desc">Métricas comerciais para investidores</div>
+    </div>
+  </div>
+  <div class="splash-foot">wehandle Intelligence · Uso interno · 2025</div>
+</div>
+
+
+<div class="top">
+  <div class="top-logo">
+    <img src="https://wehandle.com.br/hs-fs/hubfs/Marca/Horizontal_Tipo%20Azul%201.png?width=170&height=80" alt="wehandle" onerror="this.style.display='none';document.querySelector('.top-logo-txt').style.display='block'">
+    <span class="top-logo-txt">wehandle</span>
+  </div>
+  <div class="top-div"></div>
+  <span style="font-size:11px;color:rgba(255,255,255,.5);font-weight:500;letter-spacing:.04em;text-transform:uppercase">Intel</span>
+  <div class="top-period">
+    <select onchange="void 0">
+      <option>Q2 2025</option><option>Q1 2025</option><option>2025 YTD</option>
+    </select>
+    <div class="top-badge">Interno · v2</div>
+  </div>
+  <div id="top-profile" style="margin-left:8px;display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,.1);transition:background .15s" onclick="backToSplash()">
+    <span id="tp-icon" style="font-size:12px"></span>
+    <span id="tp-name" style="font-size:11px;color:rgba(255,255,255,.95);font-weight:600"></span>
+    <span style="font-size:10px;color:rgba(255,255,255,.8)">· trocar</span>
+  </div>
+</div>
+
+<div class="mob-nav" id="mob-nav">
+  <div class="mn-item active" onclick="gp('overview',this)">Overview</div>
+  <div class="mn-item" onclick="gp('ceo',this)">CEO</div>
+  <div class="mn-item" onclick="gp('cfo',this)">CFO</div>
+  <div class="mn-item" onclick="gp('cmo',this)">CMO</div>
+  <div class="mn-item" onclick="gp('cto',this)">CTO</div>
+  <div class="mn-item" onclick="gp('fundos',this)">Fundos</div>
+</div>
+
+<div class="shell">
+  <div class="side">
+    <div class="side-header"><div class="side-lbl">Report Comercial</div></div>
+    <div class="side-nav">
+      <button class="sn active" onclick="gp('overview',this)">
+        <svg class="sn-ico" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5" opacity=".45"/><rect x="1" y="9" width="6" height="6" rx="1.5" opacity=".45"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
+        Overview
+      </button>
+      <button class="sn" onclick="gp('ceo',this)">
+        <svg class="sn-ico" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 13c0-3.314 2.686-5 6-5s6 1.686 6 5" opacity=".5"/></svg>
+        CEO
+      </button>
+      <button class="sn" onclick="gp('cfo',this)">
+        <svg class="sn-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 1v14M5 4h4.5a2.5 2.5 0 010 5H5M5 9h5a2.5 2.5 0 010 5H5"/></svg>
+        CFO
+      </button>
+      <button class="sn" onclick="gp('cmo',this)">
+        <svg class="sn-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 11L5 7l3 3 4-4 3 3"/></svg>
+        CMO
+      </button>
+      <button class="sn" onclick="gp('cto',this)">
+        <svg class="sn-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l-3 2 3 2M12 6l3 2-3 2M9 3l-2 10"/></svg>
+        CTO
+      </button>
+      <button class="sn" onclick="gp('fundos',this)">
+        <svg class="sn-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 12h12M4 12V8m3 4V6m3 6V4m3 8V2"/></svg>
+        Fundos
+      </button>
+    </div>
+    <div class="side-bottom"><div class="side-bottom-txt">wehandle © 2025</div></div>
+  </div>
+
+  <div class="scroll" id="scroll">
+    <!-- RISK STRIP (ponto 4) -->
+    <div class="risk-strip" id="risk-strip" hidden>
+      <div class="risk-strip-ico">⚠️</div>
+      <div class="risk-strip-txt" id="risk-txt"></div>
+      <button class="risk-strip-btn" onclick="gp('ceo',null)">Ver contas →</button>
+    </div>
+
+    <div class="main">
+
+      <!-- ══ OVERVIEW ══ -->
+      <div class="page active" id="page-overview">
+        <div class="ph">
+          <div class="ph-eyebrow">Revenue Intelligence</div>
+          <div class="ph-title">Overview do período</div>
+          <div class="ph-sub">Pipeline, contas e eventos — visão completa ou filtrada por executivo</div>
+        </div>
+
+        <div class="narrative">
+          <div class="nar-eye">Narrativa do período</div>
+          <div class="nar-body" contenteditable="true">Crescimento consistente em MRR recorrente com expansão via upsell em contas enterprise. Pipeline ativo mantém cobertura de 2.3× a meta mensal. Atenção: Hapvida em risco por mudança de stakeholder — requer ação imediata do time.</div>
+          <div class="nar-hint">✎ clique para editar</div>
+        </div>
+
+        <!-- Filtros de visão -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:16px">
+          <span style="font-size:9px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.09em;margin-right:4px">Visão</span>
+          <button class="pill on-rose" id="ov-cl-all" onclick="ovCl('all')">Completa</button>
+          <button class="pill" id="ov-cl-ceo" onclick="ovCl('ceo')">CEO</button>
+          <button class="pill" id="ov-cl-cfo" onclick="ovCl('cfo')">CFO</button>
+          <button class="pill" id="ov-cl-cto" onclick="ovCl('cto')">CTO</button>
+          <button class="pill" id="ov-cl-cmo" onclick="ovCl('cmo')">CMO</button>
+          <div style="margin-left:auto">
+            <select style="font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--line);color:var(--ink-soft);background:var(--surface);font-family:inherit" id="ov-owner" onchange="ovRender()">
+              <option value="all">Todos AEs / CSMs</option>
+              <option value="ana">Ana Lima</option>
+              <option value="pedro">Pedro Rocha</option>
+              <option value="juliana">Juliana Matos</option>
+              <option value="marcos">Marcos Souza</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:20px">
+          <button class="pill on" id="ov-f-all" onclick="ovF('all')">Todos</button>
+          <span style="width:1px;height:18px;background:var(--line);margin:0 2px;align-self:center;display:inline-block"></span>
+          <button class="pill" id="ov-f-novo" onclick="ovF('novo')">Novo cliente</button>
+          <button class="pill" id="ov-f-upsell" onclick="ovF('upsell')">Upsell</button>
+          <button class="pill" id="ov-f-ps" onclick="ovF('ps')">PS</button>
+          <span style="width:1px;height:18px;background:var(--line);margin:0 2px;align-self:center;display:inline-block"></span>
+          <button class="pill" id="ov-f-won" onclick="ovF('won')">Ganhos</button>
+          <button class="pill" id="ov-f-open" onclick="ovF('open')">Em aberto</button>
+          <button class="pill" id="ov-f-risk" onclick="ovF('risk')">Em risco</button>
+        </div>
+
+        <div class="kpis" id="ov-kpis"></div>
+
+        <!-- MRR CHART (ponto 6) -->
+        <div class="chart-wrap">
+          <div class="cw-head">
+            <div class="cw-title">MRR ao longo do tempo</div>
+            <div class="cw-filters">
+              <button class="cwf active" onclick="setCW(6,this)">6m</button>
+              <button class="cwf" onclick="setCW(12,this)">12m</button>
+              <button class="cwf" onclick="setCW('ytd',this)">YTD</button>
+            </div>
+          </div>
+          <div class="chart-h"><canvas id="mrr-chart"></canvas></div>
+        </div>
+
+        <!-- TABLA só aparece abaixo da dobra (ponto 3) -->
+        <div class="sec">
+          <div class="sec-lbl">Contas e eventos — drill down</div>
+          <div class="tbl">
+            <div class="tbl-head" id="ov-hdr"></div>
+            <div id="ov-body"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ CEO ══ -->
+      <div class="page" id="page-ceo">
+        <div class="ph">
+          <div class="ph-eyebrow">Visão executiva</div>
+          <div class="ph-title">Report CEO</div>
+          <div class="ph-sub">Impacto no negócio — pipeline, novas logos e contas estratégicas</div>
+        </div>
+
+        <div class="narrative">
+          <div class="nar-eye">Narrativa CEO</div>
+          <div class="nar-body" contenteditable="true">Pipeline cobre 2.3× a meta trimestral. Três novas logos enterprise em andamento — Bradesco, Renner e Embraer. Upsell Itaú adiciona R$ 16k MRR consolidado. Hapvida em risco por troca de CIO — intervenção executiva recomendada.</div>
+          <div class="nar-hint">✎ clique para editar</div>
+        </div>
+
+        <div class="pills">
+          <button class="pill on-rose" onclick="ceoF('all',this)">Todas</button>
+          <button class="pill" onclick="ceoF('won',this)">Ganhos</button>
+          <button class="pill" onclick="ceoF('open',this)">Em aberto</button>
+          <button class="pill" onclick="ceoF('risk',this)">Em risco</button>
+          <button class="pill" onclick="ceoF('nl',this)">Novas logos</button>
+        </div>
+
+        <div class="kpis" id="ceo-kpis"></div>
+
+        <div class="sec">
+          <div class="sec-lbl">Contas estratégicas</div>
+          <div class="tbl">
+            <div class="tbl-head" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr">
+              <div class="tbl-ch">Conta</div><div class="tbl-ch">Segmento</div>
+              <div class="tbl-ch">MRR / PS</div><div class="tbl-ch">Grupo</div>
+              <div class="tbl-ch">Influência</div><div class="tbl-ch">Status</div>
+            </div>
+            <div id="ceo-body"></div>
+          </div>
+        </div>
+
+        <div class="lchips">
+          <button class="lchip" onclick="openOV('ceo')"><img src="https://wehandle.com.br/hs-fs/hubfs/Marca/Horizontal_Tipo%20Azul%201.png?width=170&height=80" alt="">CEO — Visão Futura ↗</button>
+          <button class="lchip" onclick="openOV('cfo')"><img src="https://wehandle.com.br/hs-fs/hubfs/Marca/Horizontal_Tipo%20Azul%201.png?width=170&height=80" alt="">CFO — Projeções ↗</button>
+        </div>
+      </div>
+
+      <!-- ══ CFO ══ -->
+      <div class="page" id="page-cfo">
+        <div class="ph">
+          <div class="ph-eyebrow">Visão financeira</div>
+          <div class="ph-title">Report CFO</div>
+          <div class="ph-sub">Receita recorrente, PS e projeções — o que entra e quando</div>
+        </div>
+
+        <div class="narrative">
+          <div class="nar-eye">Narrativa CFO</div>
+          <div class="nar-body" contenteditable="true">MRR recorrente de R$ 161k com ARR de R$ 1,9M. Próximo mês confirmado: R$ 161k. Se Renner e Bradesco fecharem, MRR sobe 28% em 60 dias. PS Embraer + Magalu = R$ 127k pontual. Margem média da carteira: 69%.</div>
+          <div class="nar-hint">✎ clique para editar</div>
+        </div>
+
+        <div class="kpis" id="cfo-kpis"></div>
+
+        <div class="two">
+          <div class="card">
+            <div class="card-head"><div class="card-head-dot" style="background:var(--ink)"></div><div class="card-head-title">Receita por tipo</div></div>
+            <div id="cfo-funnel"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-head-dot" style="background:var(--rose)"></div><div class="card-head-title">Entrada próximos meses</div></div>
+            <div id="cfo-months"></div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <div class="sec-lbl">Contas — visão CFO</div>
+          <div class="tbl">
+            <div class="tbl-head" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr">
+              <div class="tbl-ch">Conta</div><div class="tbl-ch">PS</div>
+              <div class="tbl-ch">MRR</div><div class="tbl-ch">ARR</div>
+              <div class="tbl-ch">Próx. mês</div><div class="tbl-ch">Status</div>
+            </div>
+            <div id="cfo-body"></div>
+          </div>
+        </div>
+        <div class="lchips"><button class="lchip" onclick="openOV('cfo')"><img src="https://wehandle.com.br/hs-fs/hubfs/Marca/Horizontal_Tipo%20Azul%201.png?width=170&height=80" alt="">CFO — Projeções Futuras ↗</button></div>
+      </div>
+
+      <!-- ══ CMO ══ -->
+      <div class="page" id="page-cmo">
+        <div class="ph">
+          <div class="ph-eyebrow">Visão de marketing</div>
+          <div class="ph-title">Report CMO</div>
+          <div class="ph-sub">Novas logos, mercados conquistados e o que perdemos</div>
+        </div>
+
+        <div class="narrative">
+          <div class="nar-eye">Narrativa CMO</div>
+          <div class="nar-body" contenteditable="true">4 novas logos: Embraer (indústria), Hapvida (saúde), Renner (varejo) e Bradesco (financeiro). Perdemos 3 — Vale por SAP, Porto Seguro por prazo, Ambev por solução interna. Efeito de rede ativo: Renner veio via Grupo Soma.</div>
+          <div class="nar-hint">✎ clique para editar</div>
+        </div>
+
+        <div class="kpis" id="cmo-kpis"></div>
+
+        <div class="cmo-panels">
+          <div class="cmo-panel cmo-in-p">
+            <div class="cmo-ph">
+              <img src="https://wehandle.com.br/hs-fs/hubfs/Marca/Horizontal_Tipo%20Azul%201.png?width=170&height=80" style="filter:hue-rotate(100deg) saturate(1.5)" alt="wh">
+              <span class="cmo-ph-badge">VISÃO IN</span>
+            </div>
+            <div class="cmo-pb">
+              <div class="cmo-tabs">
+                <button class="cmo-tab active" onclick="cmoT(this,'in','seg')">Segmento</button>
+                <button class="cmo-tab" onclick="cmoT(this,'in','grupo')">Grupo</button>
+                <button class="cmo-tab" onclick="cmoT(this,'in','impacto')">Impacto rede</button>
+              </div>
+              <div id="cmo-in"></div>
+            </div>
+          </div>
+          <div class="cmo-panel cmo-out-p">
+            <div class="cmo-ph">
+              <img src="https://wehandle.com.br/hs-fs/hubfs/Marca/Horizontal_Tipo%20Azul%201.png?width=170&height=80" style="filter:hue-rotate(320deg) saturate(2)" alt="wh">
+              <span class="cmo-ph-badge">VISÃO OUT</span>
+            </div>
+            <div class="cmo-pb">
+              <div class="cmo-tabs">
+                <button class="cmo-tab active" onclick="cmoT(this,'out','seg')">Segmento</button>
+                <button class="cmo-tab" onclick="cmoT(this,'out','grupo')">Grupo</button>
+                <button class="cmo-tab" onclick="cmoT(this,'out','motivo')">Motivo</button>
+              </div>
+              <div id="cmo-out"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ CTO ══ -->
+      <div class="page" id="page-cto">
+        <div class="ph">
+          <div class="ph-eyebrow">Visão técnica</div>
+          <div class="ph-title">Report CTO</div>
+          <div class="ph-sub">Gaps de produto que custam receita — oportunidades para o roadmap</div>
+        </div>
+
+        <div class="narrative">
+          <div class="nar-eye">Narrativa CTO</div>
+          <div class="nar-body" contenteditable="true">Dois gaps críticos: (1) Integração SAP S/4HANA — travou Embraer e perdemos Vale; (2) API REST avançada — custou R$ 15k MRR potencial na RD Station. Ambos com alto retorno se priorizados no Q3.</div>
+          <div class="nar-hint">✎ clique para editar</div>
+        </div>
+
+        <div class="kpis" id="cto-kpis"></div>
+
+        <div class="sec">
+          <div class="sec-lbl">Contas com gap técnico</div>
+          <div class="tbl">
+            <div class="tbl-head" style="grid-template-columns:2fr 1fr 1fr 2fr 1fr">
+              <div class="tbl-ch">Conta</div><div class="tbl-ch">MRR</div>
+              <div class="tbl-ch">MRR em risco</div><div class="tbl-ch">Gap</div>
+              <div class="tbl-ch">Status</div>
+            </div>
+            <div id="cto-body"></div>
+          </div>
+        </div>
+
+        <div class="sec-lbl">Observações para o CTO</div>
+        <div class="obs" contenteditable="true">Adicione prioridades de produto, oportunidades técnicas e impactos identificados pelo comercial...</div>
+      </div>
+
+      <!-- ══ FUNDOS ══ -->
+      <div class="page" id="page-fundos">
+        <div class="ph">
+          <div class="ph-eyebrow">Due diligence comercial</div>
+          <div class="ph-title">Report Investidores</div>
+          <div class="ph-sub">Métricas comerciais estruturadas para updates de fundos e fundraising</div>
+        </div>
+
+        <div class="inv-hero">
+          <div class="ih-top">
+            <div>
+              <div class="ih-title">wehandle — Commercial Report</div>
+              <div class="ih-sub">Pipeline · expansão · cohort · narrativa de crescimento</div>
+            </div>
+            <div class="ih-badge">📊 Investor View</div>
+          </div>
+          <div class="ih-metrics">
+            <div class="ihm"><div class="ihm-lbl">MRR Ativo</div><div class="ihm-val" id="f-mrr">—</div><div class="ihm-sub" id="f-mrr-s">contratos</div></div>
+            <div class="ihm"><div class="ihm-lbl">ARR Projetado</div><div class="ihm-val" id="f-arr">—</div><div class="ihm-sub">anualizado</div></div>
+            <div class="ihm"><div class="ihm-lbl">Pipeline</div><div class="ihm-val" id="f-pipe">—</div><div class="ihm-sub" id="f-pipe-s">deals</div></div>
+            <div class="ihm"><div class="ihm-lbl">Novas Logos</div><div class="ihm-val" id="f-logos">—</div><div class="ihm-sub" id="f-logos-s">período</div></div>
+          </div>
+        </div>
+
+        <div class="narrative" style="margin-bottom:20px">
+          <div class="nar-eye">Narrativa para Fundos</div>
+          <div class="nar-body" contenteditable="true">Crescimento MoM consistente — CAGR de 12% nos últimos 6 meses. NRR estimado acima de 110%, sinalizando expansão orgânica sólida. Pipeline de R$ 2.6M ARR com 3 deals enterprise em fase avançada. Modelo land-and-expand validado em financeiro, varejo e indústria.</div>
+          <div class="nar-hint">✎ clique para editar</div>
+        </div>
+
+        <div class="two">
+          <div class="card"><div class="card-head"><div class="card-head-dot" style="background:var(--ink)"></div><div class="card-head-title">Funil de pipeline</div></div><div id="f-funnel"></div></div>
+          <div class="card"><div class="card-head"><div class="card-head-dot" style="background:var(--rose)"></div><div class="card-head-title">Métricas SaaS</div></div><div id="f-saas"></div></div>
+          <div class="card"><div class="card-head"><div class="card-head-dot" style="background:var(--jade)"></div><div class="card-head-title">MRR por segmento</div></div><div id="f-segs"></div></div>
+          <div class="card"><div class="card-head"><div class="card-head-dot" style="background:var(--amber)"></div><div class="card-head-title">Marcos do período</div></div><div id="f-milestones"></div></div>
+        </div>
+
+        <div class="sec">
+          <div class="sec-lbl">Deals do período</div>
+          <div class="tbl">
+            <div class="tbl-head" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr">
+              <div class="tbl-ch">Conta</div><div class="tbl-ch">Segmento</div>
+              <div class="tbl-ch">Tipo</div><div class="tbl-ch">MRR / PS</div>
+              <div class="tbl-ch">ARR</div><div class="tbl-ch">Status</div>
+            </div>
+            <div id="f-deals"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main -->
+  </div><!-- /scroll -->
+</div><!-- /shell -->
+
+<!-- OVERLAY -->
+<div class="overlay" id="ov">
+  <button class="ov-back" onclick="closeOV()">← Voltar</button>
+  <div id="ov-content"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const GOALS={mrr:200000,arr:2400000,logos:6,pipe:3000000};
+const ACC=[
+  {id:1,name:'Itaú Unibanco',owner:'Ana Lima',seg:'fin',segL:'Financeiro',ev:'upsell',mrr:48000,ps:0,arr:576000,st:'won',nl:false,mkt:'Enterprise',grupo:'Itaú Unibanco Holding',rede:'Banco do Brasil',focal:'VP Operações',inf:'Alta',gap:'',nm:48000,m2:48000},
+  {id:2,name:'Lojas Renner',owner:'Pedro Rocha',seg:'ret',segL:'Varejo',ev:'novo',mrr:22000,ps:0,arr:264000,st:'open',nl:true,mkt:'Mid-market',grupo:'Grupo Renner',rede:'Grupo Soma',focal:'Gerente TI',inf:'Média',gap:'',nm:22000,m2:22000},
+  {id:3,name:'Embraer',owner:'Juliana Matos',seg:'ind',segL:'Indústria',ev:'ps',mrr:0,ps:85000,arr:0,st:'won',nl:true,mkt:'Enterprise',grupo:'Embraer S.A.',rede:'—',focal:'Procurement',inf:'Alta',gap:'Falta SAP',nm:0,m2:0},
+  {id:4,name:'Totvs',owner:'Marcos Souza',seg:'saas',segL:'SaaS / Tech',ev:'upsell',mrr:31500,ps:0,arr:378000,st:'open',nl:false,mkt:'Enterprise',grupo:'Totvs S.A.',rede:'RD Station',focal:'CTO',inf:'Alta',gap:'',nm:31500,m2:31500},
+  {id:5,name:'Hapvida',owner:'Ana Lima',seg:'hlt',segL:'Saúde',ev:'novo',mrr:19000,ps:0,arr:228000,st:'risk',nl:true,mkt:'Mid-market',grupo:'Hapvida NotreDame',rede:'—',focal:'Novo CIO',inf:'Baixa',gap:'',nm:0,m2:19000},
+  {id:6,name:'Magazine Luiza',owner:'Pedro Rocha',seg:'ret',segL:'Varejo',ev:'ps',mrr:0,ps:42000,arr:0,st:'open',nl:false,mkt:'Enterprise',grupo:'Magalu S.A.',rede:'Lojas Renner',focal:'Dir. E-commerce',inf:'Média',gap:'',nm:42000,m2:0},
+  {id:7,name:'RD Station',owner:'Juliana Matos',seg:'saas',segL:'SaaS / Tech',ev:'upsell',mrr:14000,ps:12000,arr:168000,st:'won',nl:false,mkt:'SMB',grupo:'TOTVS',rede:'Totvs',focal:'VP CS',inf:'Média',gap:'Falta API REST',nm:14000,m2:14000},
+  {id:8,name:'Bradesco Seguros',owner:'Marcos Souza',seg:'fin',segL:'Financeiro',ev:'novo',mrr:27000,ps:0,arr:324000,st:'open',nl:true,mkt:'Enterprise',grupo:'Bradesco S.A.',rede:'Itaú (segmento)',focal:'VP Operações',inf:'Alta',gap:'',nm:27000,m2:27000},
+];
+const LOST=[
+  {name:'Ambev',segL:'Consumo',grupo:'AB InBev',motivo:'Solução interna'},
+  {name:'Vale',segL:'Mineração',grupo:'Vale S.A.',motivo:'Falta SAP'},
+  {name:'Porto Seguro',segL:'Financeiro',grupo:'Porto Seguro Holding',motivo:'Prazo longo'},
+];
+const MRR_H={
+  6:[{m:'Nov/24',v:98},{m:'Dez/24',v:105},{m:'Jan/25',v:112},{m:'Fev/25',v:124},{m:'Mar/25',v:139},{m:'Abr/25',v:161}],
+  12:[{m:'Mai/24',v:72},{m:'Jun/24',v:78},{m:'Jul/24',v:83},{m:'Ago/24',v:89},{m:'Set/24',v:94},{m:'Out/24',v:98},{m:'Nov/24',v:98},{m:'Dez/24',v:105},{m:'Jan/25',v:112},{m:'Fev/25',v:124},{m:'Mar/25',v:139},{m:'Abr/25',v:161}],
+  ytd:[{m:'Jan/25',v:112},{m:'Fev/25',v:124},{m:'Mar/25',v:139},{m:'Abr/25',v:161}],
+};
+const SC={fin:'t-sap',ret:'t-grn',ind:'t-amb',saas:'t-ros',hlt:'t-gry'};
+const EL={novo:'Novo cliente',upsell:'Upsell',ps:'Projeto PS'};
+const ST={won:`<span class="dot-s d-won"></span><span style="font-size:11px;color:var(--jade)">Ganho</span>`,open:`<span class="dot-s d-open"></span><span style="font-size:11px;color:var(--sapphire)">Em aberto</span>`,risk:`<span class="dot-s d-risk"></span><span style="font-size:11px;color:var(--ruby)">Em risco</span>`};
+const OM={ana:'Ana Lima',pedro:'Pedro Rocha',juliana:'Juliana Matos',marcos:'Marcos Souza'};
+const CLI={ceo:[1,2,4,5,7,8],cfo:[1,2,3,4,6,7,8],cto:[3,4,7],cmo:[2,3,5,8]};
+function fmt(n){return'R$\u00a0'+Math.round(n).toLocaleString('pt-BR');}
+function pct(v,g){return Math.min(Math.round(v/g*100),100);}
+function kc(lbl,val,sub,d,bar){
+  const bp=bar?`<div class="kcard-bar"><div class="kcard-bar-fill" style="width:${bar}%"></div></div><div class="kcard-meta">${bar}% da meta</div>`:'';
+  return`<div class="kcard"><div class="kcard-eye">${lbl}</div><div class="kcard-val">${val}</div><div class="kcard-sub">${sub}</div>${d?`<span class="kcard-delta ${d.c}">${d.t}</span>`:''} ${bp}</div>`;
+}
+function dpos(v,p){const d=Math.round((v-p)/p*100);return d>=0?{c:'dpos',t:'↑ '+d+'% vs. Q1'}:{c:'dneg',t:'↓ '+Math.abs(d)+'% vs. Q1'};}
+
+// NAVIGATION
+function gp(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sn,.mn-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el)el.classList.add('active');
+  document.querySelectorAll('.sn').forEach(n=>{if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'"))n.classList.add('active');});
+  document.querySelectorAll('.mn-item').forEach(n=>{if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'"))n.classList.add('active');});
+  const sc=document.getElementById('scroll');sc.scrollTop=0;
+  ({ceo:rCeo,cfo:rCfo,cmo:rCmo,cto:rCto,fundos:rFundos,overview:()=>{ovRender();riskBanner();}})[id]?.();
+}
+
+// RISK BANNER
+function riskBanner(){
+  const rs=ACC.filter(a=>a.st==='risk'),s=document.getElementById('risk-strip');
+  if(!rs.length){s.hidden=true;return;}
+  document.getElementById('risk-txt').innerHTML=`<strong>Atenção — ${rs.length} conta${rs.length>1?'s':''} em risco:</strong> ${rs.map(a=>`${a.name} (${fmt(a.arr)} ARR)`).join(' · ')} — requer ação imediata.`;
+  s.hidden=false;
+}
+
+// CHART
+let chart=null,cw=6;
+function setCW(w,el){cw=w;document.querySelectorAll('.cwf').forEach(b=>b.classList.remove('active'));el.classList.add('active');drawChart();}
+function drawChart(){
+  const data=MRR_H[cw],ctx=document.getElementById('mrr-chart').getContext('2d');
+  if(chart)chart.destroy();
+  chart=new Chart(ctx,{type:'line',data:{
+    labels:data.map(d=>d.m),
+    datasets:[{label:'MRR (R$k)',data:data.map(d=>d.v),borderColor:'#0F1B2D',borderWidth:2.5,pointBackgroundColor:'#D6418C',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,fill:true,backgroundColor:c=>{const g=c.chart.ctx.createLinearGradient(0,0,0,150);g.addColorStop(0,'rgba(15,27,45,.1)');g.addColorStop(1,'rgba(15,27,45,.01)');return g;},tension:.45},
+    {label:'Meta',data:data.map(()=>200),borderColor:'#D6418C',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'R$ '+c.parsed.y+'k'}}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#8FA3BD'}},y:{grid:{color:'#EDF1F6'},ticks:{font:{size:10},color:'#8FA3BD',callback:v=>'R$'+v+'k'}}}}});
+}
+
+// OVERVIEW
+let ovCL='all',ovFL='all';
+function ovCl(cl){ovCL=cl;['all','ceo','cfo','cto','cmo'].forEach(c=>{const e=document.getElementById('ov-cl-'+c);e.className='pill'+(c===cl?' on-rose':'');});ovRender();}
+function ovF(f){ovFL=f;['all','novo','upsell','ps','won','open','risk'].forEach(c=>{const e=document.getElementById('ov-f-'+c);e.className='pill'+(c===f?' on':'');});ovRender();}
+function ovRender(){
+  const ow=document.getElementById('ov-owner').value;
+  const fi=ACC.filter(a=>{
+    const mF=ovFL==='all'||a.ev===ovFL||a.st===ovFL;
+    const mC=ovCL==='all'||(CLI[ovCL]||[]).includes(a.id);
+    const mO=ow==='all'||a.owner===OM[ow];
+    return mF&&mC&&mO;
+  });
+  let mr=0,ar=0,ps=0;fi.forEach(a=>{mr+=a.mrr;ar+=a.arr;ps+=a.ps;});
+  const pp=fi.reduce((s,a)=>s+a.mrr*12+a.ps,0);
+  let kh='';
+  if(ovCL==='cmo'){const nl=fi.filter(a=>a.nl);kh=kc('Novas logos',nl.length,'período',dpos(nl.length,3),pct(nl.length,GOALS.logos))+kc('MRR novas logos',fmt(nl.reduce((s,a)=>s+a.mrr,0)),'recorrente',null,null)+kc('Segmentos',[...new Set(nl.map(a=>a.segL))].length,[...new Set(nl.map(a=>a.segL))].join(', '),null,null)+kc('Mercados',[...new Set(nl.map(a=>a.mkt))].join(' · '),'',null,null);}
+  else if(ovCL==='cto'){const wg=fi.filter(a=>a.gap);kh=kc('MRR negociação',fmt(mr),'em andamento',null,null)+kc('Gap produto',wg.length,'contas afetadas',null,null)+kc('MRR em risco',fmt(fi.filter(a=>a.st==='risk').reduce((s,a)=>s+a.mrr,0)),'por gap técnico',null,null)+kc('PS técnico',fi.filter(a=>a.ps>0).length,'projetos',null,null);}
+  else if(ovCL==='cfo'){kh=kc('MRR Recorrente',fmt(mr),fi.filter(a=>a.st==='won').length+' contratos',dpos(mr,128000),pct(mr,GOALS.mrr))+kc('ARR',fmt(ar),'anualizado',dpos(ar,1536000),pct(ar,GOALS.arr))+kc('PS / Pontual',fmt(ps),fi.filter(a=>a.ps>0).length+' projetos',null,null)+kc('Próx. mês',fmt(fi.reduce((s,a)=>s+a.nm,0)),'confirmado',null,null);}
+  else{kh=kc('MRR impactado',fmt(mr),fi.filter(a=>a.ev==='upsell'||a.ev==='novo').length+' expansões',dpos(mr,128000),pct(mr,GOALS.mrr))+kc('ARR projetado',fmt(ar),fi.filter(a=>a.st==='won').length+' ganhos',dpos(ar,1536000),pct(ar,GOALS.arr))+kc('Receita pontual',fmt(ps),fi.filter(a=>a.ps>0).length+' PS',null,null)+kc('Pipeline',fmt(pp),fi.filter(a=>a.st==='open').length+' em negociação',dpos(pp,2100000),pct(pp,GOALS.pipe));}
+  document.getElementById('ov-kpis').innerHTML=kh;
+  const hdr=document.getElementById('ov-hdr'),body=document.getElementById('ov-body');
+  if(ovCL==='cto'){
+    hdr.style.gridTemplateColumns='2fr 1fr 1fr 2fr 1fr';
+    hdr.innerHTML='<div class="tbl-ch">Conta</div><div class="tbl-ch">Segmento</div><div class="tbl-ch">MRR</div><div class="tbl-ch">Gap</div><div class="tbl-ch">Status</div>';
+    body.innerHTML=fi.map(a=>`<div class="tbl-row" style="grid-template-columns:2fr 1fr 1fr 2fr 1fr"><div><div class="tr-name">${a.name}</div><div class="tr-sub">${a.owner}</div></div><div><span class="tag ${SC[a.seg]}">${a.segL}</span></div><div>${a.mrr>0?fmt(a.mrr):'—'}</div><div><span style="font-size:11px;color:${a.gap?'var(--ruby)':'var(--ink-faint)'}">${a.gap||'—'}</span></div><div>${ST[a.st]}</div></div>`).join('')||'<div class="nr">Nenhuma conta</div>';
+  } else {
+    hdr.style.gridTemplateColumns='2fr 1fr 1fr 1fr 1.2fr 1fr';
+    hdr.innerHTML='<div class="tbl-ch">Conta</div><div class="tbl-ch">Segmento</div><div class="tbl-ch">Evento</div><div class="tbl-ch">MRR</div><div class="tbl-ch">PS</div><div class="tbl-ch">Status</div>';
+    body.innerHTML=fi.map(a=>`<div class="tbl-row" style="grid-template-columns:2fr 1fr 1fr 1fr 1.2fr 1fr"><div><div class="tr-name">${a.name}</div><div class="tr-sub">${a.owner}</div></div><div><span class="tag ${SC[a.seg]}">${a.segL}</span></div><div><span class="tag t-gry">${EL[a.ev]}</span></div><div>${a.mrr>0?`<div class="tr-val">${fmt(a.mrr)}</div><div class="tr-val-s">mês</div>`:'—'}</div><div>${a.ps>0?`<div class="tr-val">${fmt(a.ps)}</div>`:'—'}</div><div>${ST[a.st]}</div></div>`).join('')||'<div class="nr">Nenhuma conta</div>';
+  }
+}
+
+// CEO
+let ceoFL='all';
+function ceoF(f,el){ceoFL=f;document.querySelectorAll('#page-ceo .pills .pill').forEach(p=>p.className='pill');if(el)el.className='pill on-rose';rCeo();}
+function rCeo(){
+  const fi=ACC.filter(a=>ceoFL==='all'?true:ceoFL==='nl'?a.nl:ceoFL==='won'||ceoFL==='open'||ceoFL==='risk'?a.st===ceoFL:a.ev===ceoFL);
+  const mr=fi.reduce((s,a)=>s+a.mrr,0),ar=fi.reduce((s,a)=>s+a.arr,0);
+  document.getElementById('ceo-kpis').innerHTML=kc('MRR Total',fmt(mr),fi.filter(a=>a.ev==='upsell').length+' expansões',dpos(mr,128000),pct(mr,GOALS.mrr))+kc('ARR',fmt(ar),fi.filter(a=>a.st==='won').length+' contratos',dpos(ar,1536000),pct(ar,GOALS.arr))+kc('Novas Logos',fi.filter(a=>a.nl).length,'no período',dpos(fi.filter(a=>a.nl).length,3),pct(fi.filter(a=>a.nl).length,GOALS.logos))+kc('Em risco',fi.filter(a=>a.st==='risk').length,'contas',{c:'dneg',t:fmt(fi.filter(a=>a.st==='risk').reduce((s,a)=>s+a.arr,0))+' ARR'},null);
+  document.getElementById('ceo-body').innerHTML=fi.map(a=>`<div class="tbl-row" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr"><div><div class="tr-name">${a.name}</div><div class="tr-sub">${a.owner} · ${a.mkt}</div></div><div><span class="tag ${SC[a.seg]}">${a.segL}</span></div><div>${a.mrr>0?`<div class="tr-val">${fmt(a.mrr)}</div><div class="tr-val-s">MRR</div>`:`<div class="tr-val">${fmt(a.ps)}</div><div class="tr-val-s">PS</div>`}</div><div><div class="tr-val-s">${a.grupo}</div></div><div><span class="tag ${a.inf==='Alta'?'t-ros':a.inf==='Média'?'t-amb':'t-gry'}">${a.inf}</span></div><div>${ST[a.st]}</div></div>`).join('')||'<div class="nr">Nenhuma conta</div>';
+}
+
+// CFO
+function rCfo(){
+  const mr=ACC.reduce((s,a)=>s+a.mrr,0),ar=ACC.reduce((s,a)=>s+a.arr,0),ps=ACC.reduce((s,a)=>s+a.ps,0),nm=ACC.reduce((s,a)=>s+a.nm,0);
+  document.getElementById('cfo-kpis').innerHTML=kc('MRR Recorrente',fmt(mr),ACC.filter(a=>a.mrr>0&&a.st==='won').length+' ativos',dpos(mr,128000),pct(mr,GOALS.mrr))+kc('ARR',fmt(ar),'anualizado',dpos(ar,1536000),pct(ar,GOALS.arr))+kc('PS / Pontual',fmt(ps),ACC.filter(a=>a.ps>0).length+' projetos',null,null)+kc('Entrada próx. mês',fmt(nm),'confirmado',null,null);
+  document.getElementById('cfo-funnel').innerHTML=[{l:'MRR recorrente',v:mr,p:100},{l:'PS/Pontual',v:ps,p:Math.round(ps/mr*100)},{l:'Pipeline MRR',v:ACC.filter(a=>a.st==='open').reduce((s,a)=>s+a.mrr,0),p:60},{l:'Próx. mês',v:nm,p:Math.round(nm/mr*100)}].map(r=>`<div class="fn-row"><div class="fn-lbl">${r.l}</div><div class="fn-wrap"><div class="fn-fill" style="width:${Math.min(r.p,100)}%"></div></div><div class="fn-val">${fmt(r.v)}</div></div>`).join('');
+  const nm2=ACC.reduce((s,a)=>s+a.m2,0);
+  document.getElementById('cfo-months').innerHTML=`<div style="display:flex;flex-direction:column;gap:10px">${[['Este mês',mr,'var(--ink)'],['Próximo mês',nm,'var(--ink)'],['Mês +2',nm2,'var(--ink-soft)']].map(([l,v,c])=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line-soft)"><span style="font-size:12px;color:var(--ink-soft)">${l}</span><span style="font-size:16px;font-weight:600;color:${c}">${fmt(v)}</span></div>`).join('')}<div style="background:var(--rose-soft);border:1px solid var(--rose-mid);border-radius:var(--r);padding:10px 12px;margin-top:4px"><div style="font-size:9px;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Cenário morno</div><div style="font-size:15px;font-weight:600;color:var(--ink)">${fmt(Math.round(nm*1.28))}</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px">+28% se Renner e Bradesco fecharem</div></div></div>`;
+  document.getElementById('cfo-body').innerHTML=ACC.map(a=>`<div class="tbl-row" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr"><div><div class="tr-name">${a.name}</div><div class="tr-sub">${a.owner}</div></div><div>${a.ps>0?`<div class="tr-val">${fmt(a.ps)}</div>`:'—'}</div><div>${a.mrr>0?`<div class="tr-val">${fmt(a.mrr)}</div>`:'—'}</div><div>${a.arr>0?`<div class="tr-val">${fmt(a.arr)}</div>`:'—'}</div><div>${a.nm>0?`<div class="tr-val">${fmt(a.nm)}</div>`:'—'}</div><div>${ST[a.st]}</div></div>`).join('');
+}
+
+// CMO
+let cmoTI='seg',cmoTO='seg';
+function cmoT(el,s,t){if(s==='in')cmoTI=t;else cmoTO=t;el.closest('.cmo-tabs').querySelectorAll('.cmo-tab').forEach(b=>b.classList.remove('active'));el.classList.add('active');rCmoSide(s);}
+function rCmoSide(s){
+  const nl=ACC.filter(a=>a.nl),t=s==='in'?cmoTI:cmoTO,el=document.getElementById('cmo-'+s);
+  const item=(l,v)=>`<div class="cmo-item"><div class="cmo-il">${l}</div><div class="cmo-iv">${v}</div></div>`;
+  if(s==='in'){
+    if(t==='seg'){const m={};nl.forEach(a=>{m[a.segL]=(m[a.segL]||0)+1;});el.innerHTML=Object.entries(m).map(([k,v])=>item(k,v+' logo'+(v>1?'s':''))).join('');}
+    else if(t==='grupo')el.innerHTML=nl.map(a=>item(a.name,a.grupo)).join('');
+    else el.innerHTML=nl.map(a=>item(a.name,a.rede||'—')).join('');
+  } else {
+    if(t==='seg')el.innerHTML=LOST.map(a=>item(a.name,`<span class="tag t-red">${a.segL}</span>`)).join('');
+    else if(t==='grupo')el.innerHTML=LOST.map(a=>item(a.name,a.grupo)).join('');
+    else el.innerHTML=LOST.map(a=>item(a.name,`<span style="color:var(--ruby);font-size:11px">${a.motivo}</span>`)).join('');
+  }
+}
+function rCmo(){
+  const nl=ACC.filter(a=>a.nl),nlM=nl.reduce((s,a)=>s+a.mrr,0);
+  document.getElementById('cmo-kpis').innerHTML=kc('Novas logos (IN)',nl.length,'período',dpos(nl.length,3),pct(nl.length,GOALS.logos))+kc('MRR novas logos',fmt(nlM),'recorrente',null,null)+kc('Perdidas (OUT)',LOST.length,'no período',{c:'dneg',t:'monitorar'},null)+kc('Segmentos IN',[...new Set(nl.map(a=>a.segL))].length,[...new Set(nl.map(a=>a.segL))].join(', '),null,null);
+  rCmoSide('in');rCmoSide('out');
+}
+
+// CTO
+function rCto(){
+  const wg=ACC.filter(a=>a.gap),rM=ACC.filter(a=>a.st==='risk').reduce((s,a)=>s+a.mrr,0);
+  document.getElementById('cto-kpis').innerHTML=kc('Contas com gap',wg.length,'gap técnico ativo',{c:'dneg',t:'prioridade alta'},null)+kc('MRR em risco',fmt(rM),'por gap de produto',null,null)+kc('PS técnico',ACC.filter(a=>a.ps>0).length,'projetos ativos',null,null)+kc('MRR potencial perdido','R$ 15k','RD Station API',{c:'dneg',t:'não realizado'},null);
+  document.getElementById('cto-body').innerHTML=ACC.filter(a=>a.gap||a.st==='risk').map(a=>`<div class="tbl-row" style="grid-template-columns:2fr 1fr 1fr 2fr 1fr"><div><div class="tr-name">${a.name}</div><div class="tr-sub">${a.owner}</div></div><div>${a.mrr>0?`<div class="tr-val">${fmt(a.mrr)}</div>`:'—'}</div><div>${a.st==='risk'?`<div class="tr-val" style="color:var(--ruby)">${fmt(a.mrr)}</div>`:a.gap?'<div class="tr-val-s">oportunidade</div>':'—'}</div><div><span style="font-size:11px;color:${a.gap?'var(--ruby)':'var(--amber)'}">${a.gap||'Stakeholder risk'}</span></div><div>${ST[a.st]}</div></div>`).join('')||'<div class="nr">Sem gaps</div>';
+}
+
+// FUNDOS
+function rFundos(){
+  const won=ACC.filter(a=>a.st==='won'),mr=won.reduce((s,a)=>s+a.mrr,0),ps=ACC.reduce((s,a)=>s+a.ps,0),ar=won.reduce((s,a)=>s+a.arr,0)+ps,pipe=ACC.filter(a=>a.st!=='won').reduce((s,a)=>s+a.mrr*12+a.ps,0),nl=ACC.filter(a=>a.nl);
+  document.getElementById('f-mrr').textContent=fmt(mr);document.getElementById('f-mrr-s').textContent=won.length+' contratos';
+  document.getElementById('f-arr').textContent=fmt(ar);
+  document.getElementById('f-pipe').textContent=fmt(pipe);document.getElementById('f-pipe-s').textContent=ACC.filter(a=>a.st!=='won').length+' deals';
+  document.getElementById('f-logos').textContent=nl.length;document.getElementById('f-logos-s').textContent=[...new Set(nl.map(a=>a.segL))].join(', ');
+  document.getElementById('f-funnel').innerHTML=[{l:'Pipeline total',v:pipe,p:100},{l:'Em negociação',v:ACC.filter(a=>a.st==='open').reduce((s,a)=>s+a.mrr*12,0),p:68},{l:'MRR recorrente',v:mr*12,p:48},{l:'Expansão upsell',v:ACC.filter(a=>a.ev==='upsell').reduce((s,a)=>s+a.mrr*12,0),p:32}].map(r=>`<div class="fn-row"><div class="fn-lbl">${r.l}</div><div class="fn-wrap"><div class="fn-fill" style="width:${r.p}%"></div></div><div class="fn-val">${fmt(r.v)}</div></div>`).join('');
+  const nrr=Math.round(((mr+ACC.filter(a=>a.ev==='upsell').reduce((s,a)=>s+a.mrr,0))/mr)*100);
+  document.getElementById('f-saas').innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${[{v:nrr+'%',l:'NRR estimado',c:'var(--jade)'},{v:won.length,l:'Clientes ativos',c:'var(--ink)'},{v:'R$'+Math.round(ar/won.length/1000)+'k',l:'ACV médio',c:'var(--rose)'},{v:ACC.filter(a=>a.st==='risk').length,l:'Em risco',c:'var(--ruby)'},{v:ACC.filter(a=>a.st==='open').length,l:'Pipeline',c:'var(--sapphire)'},{v:ACC.filter(a=>a.ps>0).length,l:'Proj. PS',c:'var(--amber)'}].map(m=>`<div style="text-align:center;padding:10px 6px;background:var(--surface-raised);border-radius:var(--r)"><div style="font-size:18px;font-weight:600;color:${m.c}">${m.v}</div><div style="font-size:10px;color:var(--ink-soft);margin-top:3px">${m.l}</div></div>`).join('')}</div>`;
+  const sM={};ACC.forEach(a=>{if(!sM[a.segL])sM[a.segL]={mrr:0,n:0,seg:a.seg};sM[a.segL].mrr+=a.mrr;sM[a.segL].n++;});
+  const segs=Object.entries(sM).sort((a,b)=>b[1].mrr-a[1].mrr),mx=segs[0]?.[1]?.mrr||1;
+  const sC={fin:'#1347A8',ret:'#0A6B4F',ind:'#92600A',saas:'#6D28D9',hlt:'#B52B2B'},sE={fin:'🏦',ret:'🛍️',ind:'🏭',saas:'💻',hlt:'🏥'};
+  document.getElementById('f-segs').innerHTML=segs.map(([n,d])=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px"><div style="width:26px;height:26px;border-radius:6px;background:${sC[d.seg]}18;display:flex;align-items:center;justify-content:center;font-size:13px">${sE[d.seg]||'•'}</div><div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--ink)">${n}</div><div style="font-size:10px;color:var(--ink-soft)">${d.n} conta${d.n>1?'s':''}</div></div><div style="width:60px;height:3px;background:var(--line-soft);border-radius:3px;overflow:hidden"><div style="height:3px;border-radius:3px;background:${sC[d.seg]};width:${Math.round(d.mrr/mx*100)}%"></div></div><div style="font-size:11px;font-weight:600;color:var(--ink);width:70px;text-align:right">${d.mrr>0?fmt(d.mrr):'PS'}</div></div>`).join('');
+  document.getElementById('f-milestones').innerHTML=[{c:'#1347A8',t:'Bradesco Seguros — PoC aprovada',s:'Nova logo enterprise · financeiro',i:'R$ 27.000 MRR a fechar'},{c:'#0A6B4F',t:'Itaú — upsell consolidado',s:'Analytics + 500 seats',i:'+R$ 16.000 MRR'},{c:'#92600A',t:'Embraer — PS fechado',s:'Primeiro industrial',i:'R$ 85.000 pontual'},{c:'#B52B2B',t:'Hapvida — em risco',s:'Novo CIO questiona vendor',i:'R$ 19.000 MRR monitorado'}].map(m=>`<div style="display:flex;gap:10px;margin-bottom:10px;padding:10px 12px;border-radius:var(--r);border:1px solid var(--line-soft);background:var(--surface-raised)"><div style="width:7px;height:7px;border-radius:50%;background:${m.c};flex-shrink:0;margin-top:4px"></div><div><div style="font-size:12px;font-weight:600;color:var(--ink)">${m.t}</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px">${m.s}</div><div style="font-size:11px;font-weight:500;color:${m.c};margin-top:3px">${m.i}</div></div></div>`).join('');
+  document.getElementById('f-deals').innerHTML=ACC.map(a=>`<div class="tbl-row" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr"><div><div class="tr-name">${a.name}</div><div class="tr-sub">${a.owner}</div></div><div><span class="tag ${SC[a.seg]}">${a.segL}</span></div><div><span class="tag t-gry">${EL[a.ev]}</span></div><div>${a.mrr>0?`<div class="tr-val">${fmt(a.mrr)}</div><div class="tr-val-s">MRR</div>`:a.ps>0?`<div class="tr-val">${fmt(a.ps)}</div><div class="tr-val-s">PS</div>`:'—'}</div><div>${a.arr>0?`<div class="tr-val">${fmt(a.arr)}</div>`:'—'}</div><div>${ST[a.st]}</div></div>`).join('');
+}
+
+// OVERLAY VF
+function openOV(type){
+  document.getElementById('ov').classList.add('open');
+  const c=document.getElementById('ov-content'),totArr=ACC.reduce((s,a)=>s+a.arr,0),mr=ACC.reduce((s,a)=>s+a.mrr,0),pipe=ACC.filter(a=>a.st==='open').reduce((s,a)=>s+a.arr,0);
+  if(type==='ceo'){
+    c.innerHTML=`<div class="ph"><div class="ph-eyebrow">Projeções estratégicas</div><div class="ph-title">CEO — Visão Futura</div><div class="ph-sub">Cenários para os próximos 90 dias</div></div>
+    <div class="sc-grid">
+      <div class="sc sc-frio"><div class="sc-eye">🧊 Cenário Frio</div><div class="sc-val">${fmt(Math.round(totArr*0.8))}</div><div class="sc-sub">ARR — sem novos fechamentos</div></div>
+      <div class="sc sc-morno"><div class="sc-eye">🌤 Cenário Morno</div><div class="sc-val">${fmt(Math.round(totArr+pipe*0.4))}</div><div class="sc-sub">ARR — 40% pipeline converte</div></div>
+      <div class="sc sc-quente"><div class="sc-eye">🔥 Cenário Quente</div><div class="sc-val">${fmt(Math.round(totArr+pipe*0.75))}</div><div class="sc-sub">ARR — 75% pipeline converte</div></div>
+    </div>
+    <div class="card" style="margin-bottom:16px"><div class="card-head"><div class="card-head-dot" style="background:var(--rose)"></div><div class="card-head-title">Contas prioritárias — próximos 90 dias</div></div>
+    ${ACC.filter(a=>a.st==='open'||a.st==='risk').map(a=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line-soft)"><div><div class="tr-name">${a.name}</div><div class="tr-sub">${a.focal} · influência ${a.inf}</div></div><div style="text-align:right"><div class="tr-val">${a.arr>0?fmt(a.arr):'PS '+fmt(a.ps)}</div><div>${ST[a.st]}</div></div></div>`).join('')}</div>
+    <div class="card"><div class="card-head"><div class="card-head-dot" style="background:var(--amber)"></div><div class="card-head-title">Observações / Bloqueadores</div></div><div class="obs" contenteditable="true">O que pode estar travando a receita — decisores, budget, competidores...</div></div>`;
+  } else {
+    c.innerHTML=`<div class="ph"><div class="ph-eyebrow">Projeções financeiras</div><div class="ph-title">CFO — Projeções Futuras</div><div class="ph-sub">Cenários frios, mornos e quentes para receita recorrente</div></div>
+    <div class="sc-grid">
+      <div class="sc sc-frio"><div class="sc-eye">🧊 Cenário Frio</div><div class="sc-val">${fmt(Math.round(mr*0.85))}</div><div class="sc-sub">MRR — churn parcial, sem novos</div></div>
+      <div class="sc sc-morno"><div class="sc-eye">🌤 Cenário Morno</div><div class="sc-val">${fmt(Math.round(mr*1.20))}</div><div class="sc-sub">MRR — Renner + Bradesco fecham</div></div>
+      <div class="sc sc-quente"><div class="sc-eye">🔥 Cenário Quente</div><div class="sc-val">${fmt(Math.round(mr*1.45))}</div><div class="sc-sub">MRR — pipeline full convertido</div></div>
+    </div>
+    <div class="card" style="margin-bottom:16px"><div class="card-head"><div class="card-head-dot" style="background:var(--ink)"></div><div class="card-head-title">Status por aprovação</div></div>
+    <div class="pills">${['Out','Up-','Up+','In','Approved'].map(t=>`<button class="pill" onclick="this.classList.toggle('on')">${t}</button>`).join('')}</div>
+    <div style="font-size:12px;color:var(--ink-soft)">Selecione os status para filtrar a projeção de receita por categoria de deal.</div></div>
+    <div class="card"><div class="card-head"><div class="card-head-dot" style="background:var(--rose)"></div><div class="card-head-title">Observações CFO</div></div><div class="obs" contenteditable="true">Distância de metas, risco de churn, contratos próximos do vencimento...</div></div>`;
+  }
+}
+function closeOV(){document.getElementById('ov').classList.remove('open');}
+
+// ═══════════════════════ SPLASH / PROFILE ═══════════════════════
+const PROFILES={
+  overview:{icon:'⊞',name:'Visão Geral',pages:['overview'],def:'overview'},
+  ceo:{icon:'👤',name:'CEO',pages:['ceo'],def:'ceo'},
+  cfo:{icon:'R$',name:'CFO',pages:['cfo'],def:'cfo'},
+  cmo:{icon:'↗',name:'CMO',pages:['cmo'],def:'cmo'},
+  cto:{icon:'</>',name:'CTO',pages:['cto'],def:'cto'},
+  fundos:{icon:'📊',name:'Fundos',pages:['fundos'],def:'fundos'},
+};
+let currentProfile=null;
+
+function enterAs(key){
+  currentProfile=key;
+  const p=PROFILES[key];
+  document.getElementById('tp-icon').textContent=p.icon;
+  document.getElementById('tp-name').textContent=p.name;
+  // Lock sidebar
+  document.querySelectorAll('.sn').forEach(n=>{
+    const oc=n.getAttribute('onclick')||'';
+    const ok=p.pages.some(pg=>oc.includes("'"+pg+"'"));
+    n.style.opacity=ok?'1':'0.3';
+    n.style.pointerEvents=ok?'':'none';
+  });
+  document.querySelectorAll('.mn-item').forEach(n=>{
+    const oc=n.getAttribute('onclick')||'';
+    const ok=p.pages.some(pg=>oc.includes("'"+pg+"'"));
+    n.style.display=ok?'':'none';
+  });
+  // Risk banner only for general/ceo
+  if(key==='overview'||key==='ceo') riskBanner();
+  else document.getElementById('risk-strip').hidden=true;
+  // Go to page
+  gp(p.def,null);
+  // Hide splash
+  const sp=document.getElementById('splash');
+  sp.classList.add('out');
+  setTimeout(()=>sp.classList.add('hidden'),400);
+  // Render
+  ({overview:()=>{ovRender();riskBanner();},ceo:rCeo,cfo:rCfo,cmo:rCmo,cto:rCto,fundos:rFundos})[key]?.();
+}
+
+function backToSplash(){
+  const sp=document.getElementById('splash');
+  sp.classList.remove('hidden','out');
+}
+
+// ═══════════════════════ INIT ═══════════════════════
+drawChart();
+</script>
+</body>
 </html>
+
